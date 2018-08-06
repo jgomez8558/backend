@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
+const bcrypt = require("bcryptjs");
 const models = require('../models/index');
+const auth = require("../config/auth");
 
 module.exports = {
     signUser: function (user) {
@@ -38,5 +40,12 @@ module.exports = {
                 message: 'Auth Failed'
             });
         }
+    },
+
+    hashPassword: function (plainTextPassword) {
+        let salt = bcrypt.genSaltSync(10);
+        let hash = bcrypt.hashSync(plainTextPassword, salt);
+        return hash;
     }
+
 };
