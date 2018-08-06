@@ -16,4 +16,46 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+// Display Classes
+router.get('/get-class', (req, res) => {
+
+  const query = "SELECT * FROM classes";
+  db.all(query, (err, row) => {
+
+    if(err) throw err;
+    res.send(row);
+
+  });
+
+});
+
+// Add Classes
+router.get('/add-class', (req, res) => {
+
+  let newClassName = req.params.class;
+
+  const className = db.prepare(`INSERT INTO classes (Class) VALUES (?)`);
+  className.run(newClassName);
+
+    db.all(`SELECT * FROM classes ORDER BY UserId;`, (err, row) => {
+
+    if (err) throw err;
+    res.send(row);
+
+  });
+
+});
+
+// Update Profile
+router.get('/update-profile/:userNameBefore/:userNameAfter', (req, res, next) => {
+  let nameBefore = req.params.userNameBefore;
+  let nameAfter = req.params.userNameAfter;
+
+  let update = `UPDATE users SET FirstName = '${nameAfter}' WHERE FirstName LIKE '%${nameBefore}%'`;
+
+  db.all(update, (err, row) => {
+    if(err) throw err;
+  })
+});
+
 module.exports = router;
