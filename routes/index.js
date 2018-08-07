@@ -16,6 +16,25 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+// Sample Routing
+router.get('/test', (req, res) => {
+
+  res.send({ message: "Hello Frontend! This is backend speaking." });
+
+});
+
+router.get('/get-users', (req, res) => {
+
+  const query = "SELECT * FROM users";
+  db.all(query, (err, row) => {
+
+    if(err) throw err;
+    res.send(row);
+
+  });
+
+});
+
 // Display Classes
 router.get('/get-class', (req, res) => {
 
