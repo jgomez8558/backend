@@ -17,6 +17,7 @@ router.get("/signup", function (req, res, next) {
 });
 
 router.post('/signup', function (req, res, next) {
+  console.log("Entering sign up route...")
   models.users.findOne({
     where: {
       Username: req.body.username
@@ -33,20 +34,29 @@ router.post('/signup', function (req, res, next) {
         Phone: req.body.phone,
         Role: req.body.role,
         Username: req.body.username,
-        Password: req.body.password
+        Password: auth.hashPassword(req.body.password)
       }).then(createdUser => {
-        const isMatch = createdUser.comparePassword(req.body.password);
+        console.log(createdUser)
+        res.send({
+          login: true
+        })
 
-        if (isMatch) {
-          const userId = createdUser.UserId
-          const token = auth.signUser(createdUser);
-          res.cookie('jwt', token);
-          res.redirect('profile/' + userId)
-        } else {
-          console.error('not a match');
-        }
+        // const isMatch = createdUser.comparePassword(req.body.password);
+        // if (isMatch) {
+        //   const userId = createdUser.UserId
+        //   const token = auth.signUser(createdUser);
+        //   res.cookie('jwt', token);
+        //   res.redirect('profile/' + userId)
+        // } else {
+        //   console.error('not a match');
 
-      });
+        // }
+
+      }).catch(err => {
+        res.status(500).json({
+          error: err
+        })
+      })
     }
   });
 
